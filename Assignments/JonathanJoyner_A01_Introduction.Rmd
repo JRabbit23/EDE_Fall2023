@@ -39,15 +39,15 @@ Enter answers to the questions just below the >Answer: prompt.
 
 1. What are your previous experiences with data analytics, R, and Git? Include both formal and informal training.
 
-> Answer: 
+> Answer: I have no experience in data analytics or Git. I did basic statistical reepresentation in R when I took the summer statistic prerequisite course through Duke's "Statistics with R" class on Coursera.
 
 2. Are there any components of the course about which you feel confident?
 
-> Answer: 
+> Answer: I feel familiar with the basic layout of RStudio and structure of Python after taking courses on Coursera and Codeacademy this summer. I am in no ways proficient, but I feel less intimidated.
 
 3. Are there any components of the course about which you feel apprehensive?
 
-> Answer: 
+> Answer: I hope I can keep up with the pace considering I have 5 classes this semester, 1 of which is Energy Modeling. I feel confident I can pass the class though.
 
 
 ## 3) GitHub
