@@ -32,12 +32,14 @@ This exercise accompanies the lessons in Environmental Data Analytics on coding 
 
 ```{r basics 1}
 #1.
+# forming sequence 1 to 30 in intervals of 3 and assigning it the name "Series_1"
 Series_1 <- seq(1,30,3)
 #2. 
+# calculating mean and median of Series_1
 mean(Series_1)
 median(Series_1)
-#3. 
-
+#3. # using an if statement to determine if the mean of Series_1 is greater than the median of Series_1
+ifelse(mean(Series_1)>median(Series_1),print("greater"),print("not greater"))
 ```
 
 ## Basics, Part 2
