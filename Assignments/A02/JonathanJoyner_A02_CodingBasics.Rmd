@@ -34,12 +34,15 @@ This exercise accompanies the lessons in Environmental Data Analytics on coding 
 #1.
 # forming sequence 1 to 30 in intervals of 3 and assigning it the name "Series_1"
 Series_1 <- seq(1,30,3)
-#2. 
+#2.
 # calculating mean and median of Series_1
 mean(Series_1)
 median(Series_1)
-#3. # using an if statement to determine if the mean of Series_1 is greater than the median of Series_1
+#3.
+# using an if statement to determine if the mean of Series_1 is greater than the median of Series_1
 ifelse(mean(Series_1)>median(Series_1),print("greater"),print("not greater"))
+#4.
+#Comments can be seen above
 ```
 
 ## Basics, Part 2
@@ -53,7 +56,20 @@ ifelse(mean(Series_1)>median(Series_1),print("greater"),print("not greater"))
 8.  Label the columns of your data frame with informative titles.
 
 ```{r basics 2}
-
+#5.
+#Assigning each vector with relevant names
+student_names <- c("Ashley","Bryan","Charlie","Diana")
+test_scores <- c(83,41,67,33)
+pass_or_fail <- c("TRUE","FALSE","TRUE","FALSE")
+#6.
+#explaining assigned values
+student_names #names of 4 students
+test_scores #test score percentages for each student
+pass_or_fail #whether each student passed or failed
+#7 and #8.
+#creating a data frame from values and naming each column appropriately
+school_report <- data.frame(names=student_names,scores=test_scores,pass=pass_or_fail)
+print(school_report)
 ```
 
 9.  QUESTION: How is this data frame different from a matrix?
