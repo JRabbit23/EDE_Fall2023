@@ -32,9 +32,10 @@ This exercise accompanies the lessons in Environmental Data Analytics on coding 
 
 ```{r basics 1}
 #1.
-
+Series_1 <- seq(1,30,3)
 #2. 
-
+mean(Series_1)
+median(Series_1)
 #3. 
 
 ```
