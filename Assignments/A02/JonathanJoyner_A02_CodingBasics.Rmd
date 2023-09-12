@@ -84,7 +84,6 @@ print(school_report)
 ifelse(c(40,63,75)>50,"TRUE","FALSE")
 ```
 
-
 11. Apply your function to the vector with test scores that you created in number 5.
 
 ```{r basics 3}
