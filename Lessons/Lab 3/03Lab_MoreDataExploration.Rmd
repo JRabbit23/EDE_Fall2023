@@ -53,7 +53,7 @@ matrix3 <- matrix(1:20, nrow = 5, ncol = 4, byrow = TRUE, # return after comma c
 
 matrix1[4, ] #
 matrix1[ , 3] #
-matrix1[c(12, 14)] #
+ matrix1[c(12, 14)] #
 matrix1[c(12:14)] #
 matrix1[2:4, 1:3] #
 
@@ -83,30 +83,33 @@ dataframe1$ID
 
 Question: How do the different types of data appear in the Environment tab?
 
-> Answer:
+> Answer: The data appeared as a dataframe, a list, and four matrixes.
 
 Question: In the R chunk below, write "dataframe1\$". Press `tab` after you type the dollar sign. What happens?
 
-> Answer:
+> Answer: "No matches"
 
 ### Coding challenge
 
 Find a ten-day forecast of temperatures (Fahrenheit) for Durham, North Carolina. Create two vectors, one representing the high temperature on each of the ten days and one representing the low.
 
 ```{r DataExercise-1a}
-
+DurhamHighsF<-c(81,83,83,84,78,71,79,82,85,84)
+DurhamLowsF<-c(55,56,58,60,61,63,63,64,64,63)
 ```
 
 Now, create two additional vectors that include the ten-day forecast for the high and low temperatures in Celsius. Use a function to create the two new vectors from your existing ones in Fahrenheit.
 
 ```{r DataExercise-1b}
-
+DurhamHighsC<-((DurhamHighsF-32)*5/9)
+DurhamLowsC<-((DurhamLowsF-32)*5/9)
 ```
 
 Combine your four vectors into a data frame and add informative column names.
 
 ```{r DataExercise-1c}
-
+TempDF<-data.frame(DurhamHighsF,DurhamHighsC,DurhamLowsF,DurhamLowsC)
+print(TempDF)
 ```
 
 Use the common functions `summary` and `sd` to obtain basic data summaries of the ten-day forecast. How would you call these functions differently for the entire data frame vs. a single column? Attempt to demonstrate both options below.
