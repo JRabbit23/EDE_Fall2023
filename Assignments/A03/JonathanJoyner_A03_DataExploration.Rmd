@@ -35,7 +35,7 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Ex
 ```{r,Loading Packages and Importing Datasets}
 #load lubridate and tidyverse packages using packets tab in lower right of Rstudio screen
 library(lubridate)
-install.packages("tidyverse")
+#install.packages("tidyverse")
 library(tidyverse)
 #import and name Litter + Neonics datasets from Data/Raw folder with strings read as factors
 Litter=read.csv("./Data/Raw/NEON_NIWO_Litter_massdata_2018-08_raw.csv",stringsAsFactors = TRUE)
