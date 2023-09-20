@@ -123,8 +123,8 @@ Interpret this graph. What are the most common test locations, and do they diffe
 
 [**TIP**: Add `theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))` to the end of your plot command to rotate and align the X-axis labels...]
 
-```{r}
-
+```{r, Building a Bar Plot of Endpoints}
+ggplot(Neonics)
 ```
 
 > Answer:
