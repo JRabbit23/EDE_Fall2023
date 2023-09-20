@@ -124,31 +124,43 @@ Interpret this graph. What are the most common test locations, and do they diffe
 [**TIP**: Add `theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))` to the end of your plot command to rotate and align the X-axis labels...]
 
 ```{r, Building a Bar Plot of Endpoints}
-ggplot(Neonics)
+#Create bar plot of Endpoints and use *tip* to rotate axis labels
+ggplot(Neonics) +
+  geom_bar(aes(Endpoint)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 ```
 
-> Answer:
+> Answer: The two most common end points are NOEL (high concentration producing no observable effect level difference from controls) and LOEL (lowest observable effect level showing low concentrations producing significant difference from controls)
 
 ## Explore your data (Litter)
 
 12. Determine the class of collectDate. Is it a date? If not, change to a date and confirm the new class of the variable. Using the `unique` function, determine which dates litter was sampled in August 2018.
 
-```{r}
-
+```{r, Determining Class and Changing Date}
+#Determine class of Litter data set column collectDate
+class(Litter$collectDate)
+#Change class from factor to date using as.Date
+Litter$collectDate <- as.Date(Litter$collectDate)
+#Confirm change in class of collectDate from factor to date
+class(Litter$collectDate)
+#Use unique function to find unqie values in collectDate column and determine dates litter was sampled
+unique(Litter$collectDate)
 ```
 
 13. Using the `unique` function, determine how many plots were sampled at Niwot Ridge. How is the information obtained from `unique` different from that obtained from `summary`?
 
-```{r}
-
+```{r, Determining # of Sampled Plots at Niwot Ridge}
+#Use unique function to determine unique values in plotID column and identify the range of plots used for sampling on Niwot Ridge
+unique(Litter$plotID)
 ```
 
-> Answer:
+> Answer: Unique will determine the number of unique values including a total whereas summary will display the number of values along with the amount if times each value was identified.
 
 14. Create a bar graph of functionalGroup counts. This shows you what type of litter is collected at the Niwot Ridge sites. Notice that litter types are fairly equally distributed across the Niwot Ridge sites.
 
-```{r}
-
+```{r, Creating Bar Graph of Niwot Ridge Groups}
+#Create a bar graph which visualizes the distribution of samples by functional group
+ggplot(Litter,aes(x=functionalGroup)) + geom_bar()
 ```
 
 15. Using `geom_boxplot` and `geom_violin`, create a boxplot and a violin plot of dryMass by functionalGroup.
