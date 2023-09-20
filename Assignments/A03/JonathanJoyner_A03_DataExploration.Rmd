@@ -104,21 +104,20 @@ class(Neonics$Conc.1..Author.)
 ```{r, Generating Plot of Studies by Year}
 #Use ggplot() and geom_freqpoly to plot number of studies by publication year between 1980 and 2020
 ggplot(Neonics) +
-  geom_freqpoly(aes(Publication.Year), bins=40,)
+  geom_freqpoly(aes(Publication.Year), bins=40)
 ```
 
 10. Reproduce the same graph but now add a color aesthetic so that different Test.Location are displayed as different colors.
 
 ```{r, Adding Colors to Plot}
-#
+#Add color coded differentiation by test location
 ggplot(Neonics) +
-  geom_freqpoly(aes(Publication.Year), bins=40,)
-  geom_freqpoly(aes(Test.Location), bins=40, color = "red")
+  geom_freqpoly(aes(Publication.Year,color=Test.Location), bins=40,)
 ```
 
 Interpret this graph. What are the most common test locations, and do they differ over time?
 
-> Answer:
+> Answer: The two most common locations are the lab and the natural field. These two locations change places in popularity at certain intervals of time. For instance, the lab is most popular from around 2002-2008 and 2011-2017 whereas the natural field is most popular between 1993-1998 and during a short period from 2009-10.
 
 11. Create a bar graph of Endpoint counts. What are the two most common end points, and how are they defined? Consult the ECOTOX_CodeAppendix for more information. 
 
