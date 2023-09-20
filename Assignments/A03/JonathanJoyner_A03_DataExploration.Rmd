@@ -37,9 +37,9 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Ex
 library(lubridate)
 install.packages("tidyverse")
 library(tidyverse)
-#import and name Litter + Neonics datasets from Data/Raw folder
-Litter=read.csv("./Data/Raw/NEON_NIWO_Litter_massdata_2018-08_raw.csv")
-Neonics=read.csv("./Data/Raw/ECOTOX_Neonicotinoids_Insects_raw.csv")
+#import and name Litter + Neonics datasets from Data/Raw folder with strings read as factors
+Litter=read.csv("./Data/Raw/NEON_NIWO_Litter_massdata_2018-08_raw.csv",stringsAsFactors = TRUE)
+Neonics=read.csv("./Data/Raw/ECOTOX_Neonicotinoids_Insects_raw.csv",stringsAsFactors = TRUE)
 ```
 
 ## Learn about your system
@@ -64,49 +64,56 @@ Neonics=read.csv("./Data/Raw/ECOTOX_Neonicotinoids_Insects_raw.csv")
 5.  What are the dimensions of the dataset?
 
 ```{r, Finding Dimensions of Litter and Neonics}
-#Use dim() to find dimensions of Litter and Neonics datasets
-dim(Litter)
+#Use dim() to find dimensions of Neonics dataset
 dim(Neonics)
-#Litter is 188 rows x 19 columns and Neonics is 4623 rows x 30 columns
+#Neonics is 4623 rows x 30 columns
 ```
 
 6.  Using the `summary` function on the "Effect" column, determine the most common effects that are studied. Why might these effects specifically be of interest?
 
 ```{r, Finding the Most Common Effects}
-#
+#Use summary() to view effects and determine most frequently referenced
+summary(Neonics$Effect)
 ```
 
-> Answer:
+> Answer: The top three most common effects in order are Population, Mortality, and Behavior
 
 
 7.  Using the `summary` function, determine the six most commonly studied species in the dataset (common name). What do these species have in common, and why might they be of interest over other insects? Feel free to do a brief internet search for more information if needed.[TIP: The `sort()` command can sort the output of the summary command...]
 
-```{r}
-
+```{r, Finding the Most Commonly Studied Species}
+#Use summary() and sort() to find the most common name species
+summary(sort(Neonics$Species.Common.Name))
 ```
 
-> Answer:
+> Answer: The most commonly studied species in order are the Honey Bee, Parasitic Wasp, Buff Tailed Bumblebee, Carniolan Honey Bee, Bumble Bee, and Italian Honeybee. All of these species belong to the order Hymenoptera. They are important pollinators for many plants and they have a large impact on ecosystem health.
 
 8.  Concentrations are always a numeric value. What is the class of `Conc.1..Author.` column in the dataset, and why is it not numeric?
 
-```{r}
-
+```{r, Establishing Class}
+#Use class() on Neonics dataset to establish class of "Conc.1..Author."
+class(Neonics$Conc.1..Author.)
 ```
 
-> Answer:
+> Answer: The class of Conc.1..Author. is not numeric, but factor. This is the case because there is some data listed as N/A which cannot be categorized as numeric.
 
 ## Explore your data graphically (Neonics)
 
 9.  Using `geom_freqpoly`, generate a plot of the number of studies conducted by publication year.
 
-```{r}
-
+```{r, Generating Plot of Studies by Year}
+#Use ggplot() and geom_freqpoly to plot number of studies by publication year between 1980 and 2020
+ggplot(Neonics) +
+  geom_freqpoly(aes(Publication.Year), bins=40,)
 ```
 
 10. Reproduce the same graph but now add a color aesthetic so that different Test.Location are displayed as different colors.
 
-```{r}
-
+```{r, Adding Colors to Plot}
+#
+ggplot(Neonics) +
+  geom_freqpoly(aes(Publication.Year), bins=40,)
+  geom_freqpoly(aes(Test.Location), bins=40, color = "red")
 ```
 
 Interpret this graph. What are the most common test locations, and do they differ over time?
