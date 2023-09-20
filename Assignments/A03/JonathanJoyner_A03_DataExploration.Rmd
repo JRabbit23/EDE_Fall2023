@@ -55,9 +55,9 @@ Neonics=read.csv("./Data/Raw/ECOTOX_Neonicotinoids_Insects_raw.csv",stringsAsFac
 4.  How is litter and woody debris sampled as part of the NEON network? Read the NEON_Litterfall_UserGuide.pdf document to learn more. List three pieces of salient information about the sampling methods here:
 
 > Answer: 
- 1. Debris (of up to 2x50 centimeters) is collected from both elevated and ground trabps to an accuracy of 0.01 grams
- 2. Elevated traps are 0.5 meters square baskets and 80 centimeters off the ground. Ground traps are 3 meter by 0.5 meter triangular areas.
- 3. There are 1-4 traps placed across 30 plots with vegetation greater than 2 meters. 26 of these plots are 26 by 26 meters and 4 are 40 by 40 meters.
+ (1.) Debris (of up to 2x50 centimeters) is collected from both elevated and ground trabps to an accuracy of 0.01 grams
+ (2.) Elevated traps are 0.5 meters square baskets and 80 centimeters off the ground. Ground traps are 3 meter by 0.5 meter triangular areas.
+ (3.) There are 1-4 traps placed across 30 plots with vegetation greater than 2 meters. 26 of these plots are 26 by 26 meters and 4 are 40 by 40 meters.
 
 ## Obtain basic summaries of your data (Neonics)
 
@@ -95,7 +95,7 @@ summary(sort(Neonics$Species.Common.Name))
 class(Neonics$Conc.1..Author.)
 ```
 
-> Answer: The class of Conc.1..Author. is not numeric, but factor. This is the case because there is some data listed as N/A which cannot be categorized as numeric.
+> Answer: The class of Conc.1..Author. is not numeric, but factor. This is the case because there is some data in the column which cannot be categorized as numeric.
 
 ## Explore your data graphically (Neonics)
 
@@ -143,7 +143,7 @@ class(Litter$collectDate)
 Litter$collectDate <- as.Date(Litter$collectDate)
 #Confirm change in class of collectDate from factor to date
 class(Litter$collectDate)
-#Use unique function to find unqie values in collectDate column and determine dates litter was sampled
+#Use unique function to find distinct values in collectDate column and determine dates litter was sampled
 unique(Litter$collectDate)
 ```
 
