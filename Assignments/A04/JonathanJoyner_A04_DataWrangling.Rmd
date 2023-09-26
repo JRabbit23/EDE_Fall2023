@@ -38,11 +38,11 @@ library(lubridate)
 getwd()
 setwd("C:/Users/jbjoy/OneDrive/Documents/Grad School/Fall 2023/Environ 872/EDE_Fall2023")
 #1c read in raw data files for EPA air
-EPA1=read.csv("./Data/Raw/EPAair_O3_NC2018_raw.csv",stringsAsFactors = TRUE)
-EPA2=read.csv("./Data/Raw/EPAair_O3_NC2019_raw.csv",stringsAsFactors = TRUE)
-EPA3=read.csv("./Data/Raw/EPAair_PM25_NC2018_raw.csv",stringsAsFactors = TRUE)
-EPA4=read.csv("./Data/Raw/EPAair_PM25_NC2019_raw.csv",stringsAsFactors = TRUE)
-#2 
+EPA1<-read.csv("./Data/Raw/EPAair_O3_NC2018_raw.csv",stringsAsFactors = TRUE)
+EPA2<-read.csv("./Data/Raw/EPAair_O3_NC2019_raw.csv",stringsAsFactors = TRUE)
+EPA3<-read.csv("./Data/Raw/EPAair_PM25_NC2018_raw.csv",stringsAsFactors = TRUE)
+EPA4<-read.csv("./Data/Raw/EPAair_PM25_NC2019_raw.csv",stringsAsFactors = TRUE)
+#2 Glimpse each of the 4 named datasets (EPA1,2,3,and 4)
 glimpse(EPA1)
 glimpse(EPA2)
 glimpse(EPA3)
@@ -61,14 +61,42 @@ glimpse(EPA4)
 6. Save all four processed datasets in the Processed folder. Use the same file names as the raw files but replace "raw" with "processed".
 
 ```{r}
-#3
-
-#4
-
-#5
-
-#6
-
+#3 check class of each dataset
+class(EPA1$Date)
+class(EPA2$Date)
+class(EPA3$Date)
+class(EPA4$Date)
+#change class of each to date objects
+EPA1$Date <-as.Date(EPA1$Date, format = "%m/%d/%y")
+EPA2$Date <-as.Date(EPA2$Date, format = "%m/%d/%y")
+EPA3$Date <-as.Date(EPA3$Date, format = "%m/%d/%y")
+EPA4$Date <-as.Date(EPA4$Date, format = "%m/%d/%y")
+#check class and head of each dataset to confirm changes and ensure dates are displayed correctly
+class(EPA1$Date)
+head(EPA1$Date)
+class(EPA2$Date)
+head(EPA2$Date)
+class(EPA3$Date)
+head(EPA3$Date)
+class(EPA4$Date)
+head(EPA4$Date)
+#4 select specific columns for each dataset
+select(EPA1, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+select(EPA2, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+select(EPA3, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+select(EPA4, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+#5 use mutate function and pipes to change data in AQS_PARAMETER_DESC columns to PM2.5
+EPA3 <-
+  EPA3 %>%
+  mutate(AQS_PARAMETER_DESC = "PM2.5")
+EPA4 <-
+  EPA4 %>%
+  mutate(AQS_PARAMETER_DESC = "PM2.5")
+#6 use write function to save processed datasets to Data/Processed file
+write.csv(EPA1, row.names = FALSE, file = "./Data/Processed/EPAair_O3_NC2018_processed.csv")
+write.csv(EPA2, row.names = FALSE, file = "./Data/Processed/EPAair_O3_NC2019_processed.csv")
+write.csv(EPA3, row.names = FALSE, file = "./Data/Processed/EPAair_PM25_NC2018_processed.csv")
+write.csv(EPA4, row.names = FALSE, file = "./Data/Processed/EPAair_PM25_NC2019_processed.csv")
 ```
 
 
