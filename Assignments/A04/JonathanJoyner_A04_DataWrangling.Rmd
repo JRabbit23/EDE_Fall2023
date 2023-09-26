@@ -121,8 +121,30 @@ write.csv(EPA4, row.names = FALSE, file = "./Data/Processed/EPAair_PM25_NC2019_p
 11. Save your processed dataset with the following file name: "EPAair_O3_PM25_NC1819_Processed.csv"
 
 ```{r}
-#7 
-
+#7 check columns to ensure they match before binding
+colnames(EPA1)
+colnames(EPA2)
+colnames(EPA3)
+colnames(EPA4)
+# use rename function and pipes to change differing column title to a matching title
+EPA1 <- EPA1 %>% 
+                rename(
+                Concentration = Daily.Max.8.hour.Ozone.Concentration
+                  )
+EPA2 <- EPA2 %>% 
+                rename(
+                Concentration = Daily.Max.8.hour.Ozone.Concentration
+                  )
+EPA3 <- EPA3 %>% 
+                rename(
+                Concentration = Daily.Mean.PM2.5.Concentration
+                  )
+EPA4 <- EPA4 %>% 
+                rename(
+                Concentration = Daily.Mean.PM2.5.Concentration
+                  )
+# use rbind to combine datasets
+EPA_Combined <- rbind(EPA1,EPA2,EPA3,EPA4)
 #8 
 
 #9
