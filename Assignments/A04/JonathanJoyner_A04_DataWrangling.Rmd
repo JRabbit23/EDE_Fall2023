@@ -152,12 +152,12 @@ EPA_Combined_F1 <-
     group_by(Date, Site.Name, AQS_PARAMETER_DESC, COUNTY) %>%
     summarize(meanAQI=mean(DAILY_AQI_VALUE), #Create columns for mean of AQI, latitude and longitude
               meanLAT=mean(SITE_LATITUDE),
-              meanLON=mean(SITE_LONGITUDE),
-              Month=month(Date), #Create columns for month and year using lubridate
+              meanLON=mean(SITE_LONGITUDE)) %>%
+     mutate(Month=month(Date), #Create columns for month and year using lubridate
               Year=year(Date)
               )
 #9 spread the DAILY_AQI_VALUE data into two columns which are PM2.5 and Ozone
-EPA_Combined_Spread <- pivot_wider(EPA_Combined,names_from="AQS_PARAMETER_DESC",values_from="DAILY_AQI_VALUE")
+EPA_Combined_Spread <- pivot_wider(EPA_Combined_F1,names_from="AQS_PARAMETER_DESC",values_from="meanAQI")
 #10 get dimensions of new dataset
 dim(EPA_Combined_Spread)
 #11 save as processed file
@@ -179,9 +179,9 @@ EPA_Final<-
   EPA_Joined %>%
   group_by(Site.Name,Month,Year) %>%
   summarize(MeanOZ=mean(Ozone),
-            MeanPM=mean(PM2.5),
-            drop_na
-            )
+            MeanPM=mean(PM2.5)) %>%
+  drop_na(MeanOZ)
+
 #13
 dim(EPA_Final)
 
