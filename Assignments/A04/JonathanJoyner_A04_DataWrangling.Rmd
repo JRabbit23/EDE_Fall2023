@@ -126,7 +126,7 @@ colnames(EPA1R)
 colnames(EPA2R)
 colnames(EPA3R)
 colnames(EPA4R)
-# use rename function and pipes to change differing column title to a matching title
+# NOT APPLICABLE: use rename function and pipes to change differing column title to a matching title
 #EPA1R <- EPA1R %>% 
                 #rename(
                 #Concentration = Daily.Max.8.hour.Ozone.Concentration
