@@ -145,10 +145,19 @@ EPA4 <- EPA4 %>%
                   )
 # use rbind to combine datasets
 EPA_Combined <- rbind(EPA1,EPA2,EPA3,EPA4)
-#8 
-
+#8 Filter common sites and group by date, site, AQS parameter, and county.
+EPA_Combined_F1 <-
+  EPA_Combined %>%
+    filter(Site.Name == "Linville Falls" | Site.Name == "Durham Armory" | Site.Name == "Leggett"  | Site.Name == "Hattie Avenue" | Site.Name == "Clemmons Middle" | Site.Name == "Mendenhall School" | Site.Name == "Frying Pan Mountain" | Site.Name == "West Johnston Co." | Site.Name == "Garinger High School" | Site.Name == "Castle Hayne" | Site.Name == "Pitt Agri. Center" | Site.Name == "Bryson City" | Site.Name == "Millbrook School") %>%
+    group_by(Date, Site.Name, AQS_PARAMETER_DESC, COUNTY) %>%
+    summarize(meanAQI=mean(DAILY_AQI_VALUE), #Create columns for mean of AQI, latitude and longitude
+              meanLAT=mean(SITE_LATITUDE),
+              meanLON=mean(SITE_LONGITUDE),
+              Month=month(Date), #Create columns for month and year using lubridate
+              Year=year(Date)
+              )
 #9
-
+EPA_Combined_F1_Spread <- pivot_wider(EPA_Combined_F1, names_from = ozone, values_from = PM2.5)
 #10
 
 #11
