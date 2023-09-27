@@ -67,10 +67,10 @@ class(EPA2$Date)
 class(EPA3$Date)
 class(EPA4$Date)
 #change class of each to date objects
-EPA1$Date <-as.Date(EPA1$Date, format = "%m/%d/%y")
-EPA2$Date <-as.Date(EPA2$Date, format = "%m/%d/%y")
-EPA3$Date <-as.Date(EPA3$Date, format = "%m/%d/%y")
-EPA4$Date <-as.Date(EPA4$Date, format = "%m/%d/%y")
+EPA1$Date <-as.Date(EPA1$Date, format = "%m/%d/%Y")
+EPA2$Date <-as.Date(EPA2$Date, format = "%m/%d/%Y")
+EPA3$Date <-as.Date(EPA3$Date, format = "%m/%d/%Y")
+EPA4$Date <-as.Date(EPA4$Date, format = "%m/%d/%Y")
 #check class and head of each dataset to confirm changes and ensure dates are displayed correctly
 class(EPA1$Date)
 head(EPA1$Date)
@@ -81,22 +81,22 @@ head(EPA3$Date)
 class(EPA4$Date)
 head(EPA4$Date)
 #4 select specific columns for each dataset
-select(EPA1, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
-select(EPA2, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
-select(EPA3, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
-select(EPA4, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+EPA1R<-select(EPA1, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+EPA2R<-select(EPA2, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+EPA3R<-select(EPA3, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+EPA4R<-select(EPA4, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
 #5 use mutate function and pipes to change data in AQS_PARAMETER_DESC columns to PM2.5
-EPA3 <-
-  EPA3 %>%
+EPA3R <-
+  EPA3R %>%
   mutate(AQS_PARAMETER_DESC = "PM2.5")
-EPA4 <-
-  EPA4 %>%
+EPA4R <-
+  EPA4R %>%
   mutate(AQS_PARAMETER_DESC = "PM2.5")
 #6 use write function to save processed datasets to Data/Processed file
-write.csv(EPA1, row.names = FALSE, file = "./Data/Processed/EPAair_O3_NC2018_processed.csv")
-write.csv(EPA2, row.names = FALSE, file = "./Data/Processed/EPAair_O3_NC2019_processed.csv")
-write.csv(EPA3, row.names = FALSE, file = "./Data/Processed/EPAair_PM25_NC2018_processed.csv")
-write.csv(EPA4, row.names = FALSE, file = "./Data/Processed/EPAair_PM25_NC2019_processed.csv")
+write.csv(EPA1R, row.names = FALSE, file = "./Data/Processed/EPAair_O3_NC2018_processed.csv")
+write.csv(EPA2R, row.names = FALSE, file = "./Data/Processed/EPAair_O3_NC2019_processed.csv")
+write.csv(EPA3R, row.names = FALSE, file = "./Data/Processed/EPAair_PM25_NC2018_processed.csv")
+write.csv(EPA4R, row.names = FALSE, file = "./Data/Processed/EPAair_PM25_NC2019_processed.csv")
 ```
 
 
@@ -122,29 +122,29 @@ write.csv(EPA4, row.names = FALSE, file = "./Data/Processed/EPAair_PM25_NC2019_p
 
 ```{r}
 #7 check columns to ensure they match before binding
-colnames(EPA1)
-colnames(EPA2)
-colnames(EPA3)
-colnames(EPA4)
+colnames(EPA1R)
+colnames(EPA2R)
+colnames(EPA3R)
+colnames(EPA4R)
 # use rename function and pipes to change differing column title to a matching title
-EPA1 <- EPA1 %>% 
-                rename(
-                Concentration = Daily.Max.8.hour.Ozone.Concentration
-                  )
-EPA2 <- EPA2 %>% 
-                rename(
-                Concentration = Daily.Max.8.hour.Ozone.Concentration
-                  )
-EPA3 <- EPA3 %>% 
-                rename(
-                Concentration = Daily.Mean.PM2.5.Concentration
-                  )
-EPA4 <- EPA4 %>% 
-                rename(
-                Concentration = Daily.Mean.PM2.5.Concentration
-                  )
+#EPA1R <- EPA1R %>% 
+                #rename(
+                #Concentration = Daily.Max.8.hour.Ozone.Concentration
+                  #)
+#EPA2R <- EPA2R %>% 
+                #rename(
+                #Concentration = Daily.Max.8.hour.Ozone.Concentration
+                  #)
+#EPA3R <- EPA3R %>% 
+                #rename(
+                #Concentration = Daily.Mean.PM2.5.Concentration
+                  #)
+#EPA4R <- EPA4R %>% 
+                #rename(
+                #Concentration = Daily.Mean.PM2.5.Concentration
+                  #)
 # use rbind to combine datasets
-EPA_Combined <- rbind(EPA1,EPA2,EPA3,EPA4)
+EPA_Combined <- rbind(EPA1R,EPA2R,EPA3R,EPA4R)
 #8 Filter common sites and group by date, site, AQS parameter, and county.
 EPA_Combined_F1 <-
   EPA_Combined %>%
@@ -156,12 +156,12 @@ EPA_Combined_F1 <-
               Month=month(Date), #Create columns for month and year using lubridate
               Year=year(Date)
               )
-#9
-EPA_Combined_F1_Spread <- pivot_wider(EPA_Combined_F1, names_from = ozone, values_from = PM2.5)
-#10
-
-#11
-
+#9 spread the DAILY_AQI_VALUE data into two columns which are PM2.5 and Ozone
+EPA_Combined_Spread <- pivot_wider(EPA_Combined,names_from="AQS_PARAMETER_DESC",values_from="DAILY_AQI_VALUE")
+#10 get dimensions of new dataset
+dim(EPA_Combined_Spread)
+#11 save as processed file
+write.csv(EPA_Combined_Spread, row.names = FALSE, file = "./Data/Processed/EPAair_O3_PM25_NC1819_Processed.csv")
 ```
 
 
@@ -174,10 +174,16 @@ EPA_Combined_F1_Spread <- pivot_wider(EPA_Combined_F1, names_from = ozone, value
 ```{r}
 
 #12
-
-
+EPA_Joined<-full_join(EPA_Combined_F1,EPA_Combined_Spread)
+EPA_Final<-
+  EPA_Joined %>%
+  group_by(Site.Name,Month,Year) %>%
+  summarize(MeanOZ=mean(Ozone),
+            MeanPM=mean(PM2.5),
+            drop_na
+            )
 #13
-
+dim(EPA_Final)
 
 ```
 
