@@ -156,7 +156,7 @@ EPA_Combined_F1 <-
      mutate(Month=month(Date), #Create columns for month and year using lubridate
               Year=year(Date)
               )
-#9 spread the DAILY_AQI_VALUE data into two columns which are PM2.5 and Ozone
+#9 spread the mean AQI values into two columns which are PM2.5 and Ozone
 EPA_Combined_Spread <- pivot_wider(EPA_Combined_F1,names_from="AQS_PARAMETER_DESC",values_from="meanAQI")
 #10 get dimensions of new dataset
 dim(EPA_Combined_Spread)
@@ -173,8 +173,9 @@ write.csv(EPA_Combined_Spread, row.names = FALSE, file = "./Data/Processed/EPAai
 
 ```{r}
 
-#12
+#12 Join the combined dataset and the spread dataset so the correct columns are available
 EPA_Joined<-full_join(EPA_Combined_F1,EPA_Combined_Spread)
+# group the dataset by site, month, and year, get averages for the spread column values, and drop any NA values present
 EPA_Final<-
   EPA_Joined %>%
   group_by(Site.Name,Month,Year) %>%
@@ -182,11 +183,11 @@ EPA_Final<-
             MeanPM=mean(PM2.5)) %>%
   drop_na(MeanOZ)
 
-#13
+#13 check the daataset dimensions
 dim(EPA_Final)
 
 ```
 
 14. Why did we use the function `drop_na` rather than `na.omit`?
 
-> Answer: 
+> Answer: drop_na works better than na.omit because it isolates the effect in one column. na.omit would drop NA from the entire dataset
