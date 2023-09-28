@@ -183,7 +183,7 @@ EPA_Final<-
             MeanPM=mean(PM2.5)) %>%
   drop_na(MeanOZ)
 
-#13 check the daataset dimensions
+#13 check the dataset dimensions
 dim(EPA_Final)
 
 ```
