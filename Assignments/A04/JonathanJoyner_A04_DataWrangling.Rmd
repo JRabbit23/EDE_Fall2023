@@ -126,23 +126,6 @@ colnames(EPA1R)
 colnames(EPA2R)
 colnames(EPA3R)
 colnames(EPA4R)
-# NOT APPLICABLE: use rename function and pipes to change differing column title to a matching title
-#EPA1R <- EPA1R %>% 
-                #rename(
-                #Concentration = Daily.Max.8.hour.Ozone.Concentration
-                  #)
-#EPA2R <- EPA2R %>% 
-                #rename(
-                #Concentration = Daily.Max.8.hour.Ozone.Concentration
-                  #)
-#EPA3R <- EPA3R %>% 
-                #rename(
-                #Concentration = Daily.Mean.PM2.5.Concentration
-                  #)
-#EPA4R <- EPA4R %>% 
-                #rename(
-                #Concentration = Daily.Mean.PM2.5.Concentration
-                  #)
 # use rbind to combine datasets
 EPA_Combined <- rbind(EPA1R,EPA2R,EPA3R,EPA4R)
 #8 Filter common sites and group by date, site, AQS parameter, and county.
