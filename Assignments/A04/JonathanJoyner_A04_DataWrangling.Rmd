@@ -128,15 +128,27 @@ colnames(EPA3R)
 colnames(EPA4R)
 # use rbind to combine datasets
 EPA_Combined <- rbind(EPA1R,EPA2R,EPA3R,EPA4R)
-#8 Filter common sites and group by date, site, AQS parameter, and county.
+#8 Filter common sites and group by date, site, AQS parameter, and county. Create columns for mean of AQI, latitude and longitude. Create columns for month and year using lubridate.
 EPA_Combined_F1 <-
   EPA_Combined %>%
-    filter(Site.Name == "Linville Falls" | Site.Name == "Durham Armory" | Site.Name == "Leggett"  | Site.Name == "Hattie Avenue" | Site.Name == "Clemmons Middle" | Site.Name == "Mendenhall School" | Site.Name == "Frying Pan Mountain" | Site.Name == "West Johnston Co." | Site.Name == "Garinger High School" | Site.Name == "Castle Hayne" | Site.Name == "Pitt Agri. Center" | Site.Name == "Bryson City" | Site.Name == "Millbrook School") %>%
+    filter(Site.Name == "Linville Falls" | 
+             Site.Name == "Durham Armory" | 
+             Site.Name == "Leggett"  | 
+             Site.Name == "Hattie Avenue" | 
+             Site.Name == "Clemmons Middle" | 
+             Site.Name == "Mendenhall School" | 
+             Site.Name == "Frying Pan Mountain" | 
+             Site.Name == "West Johnston Co." | 
+             Site.Name == "Garinger High School" | 
+             Site.Name == "Castle Hayne" | 
+             Site.Name == "Pitt Agri. Center" | 
+             Site.Name == "Bryson City" | 
+             Site.Name == "Millbrook School") %>%
     group_by(Date, Site.Name, AQS_PARAMETER_DESC, COUNTY) %>%
-    summarize(meanAQI=mean(DAILY_AQI_VALUE), #Create columns for mean of AQI, latitude and longitude
+    summarize(meanAQI=mean(DAILY_AQI_VALUE),
               meanLAT=mean(SITE_LATITUDE),
               meanLON=mean(SITE_LONGITUDE)) %>%
-     mutate(Month=month(Date), #Create columns for month and year using lubridate
+     mutate(Month=month(Date), 
               Year=year(Date)
               )
 #9 spread the mean AQI values into two columns which are PM2.5 and Ozone
