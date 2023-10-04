@@ -124,8 +124,12 @@ Question: What do you observe about the variables of interest over seasons and b
 
 ```{r Plot litter}
 #6
-
-
+NIWOTNeedles<-
+  NIWOT%>%
+  filter(functionalGroup=="Needles")
+Plot6F<- ggplot(NIWOTNeedles,aes(x = collectDate, y = dryMass, color=nlcdClass))+
+  geom_point()
+print(Plot6F)
 #7
 
 
