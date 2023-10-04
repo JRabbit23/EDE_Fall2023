@@ -36,15 +36,18 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Vi
 library(tidyverse)
 library(lubridate)
 library(cowplot)
+library(ggplot2)
 #set path for processed data files
 setwd("C:/Users/jbjoy/OneDrive/Documents/Grad School/Fall 2023/Environ 872/EDE_Fall2023/Data/Processed_KEY")
 #read processed data files
-PeterPaul<-read.csv("NTL-LTER_Lake_Chemistry_Nutrients_PeterPaul_Processed.csv",stringsAsFactors = TRUE)
-NIWOT<-read.csv("NEON_NIWO_Litter_mass_trap_Processed.csv",stringsAsFactors = TRUE)
+PeterPaul<-
+  read.csv("NTL-LTER_Lake_Chemistry_Nutrients_PeterPaul_Processed.csv",stringsAsFactors = TRUE)
+NIWOT<-
+  read.csv("NEON_NIWO_Litter_mass_trap_Processed.csv",stringsAsFactors = TRUE)
 #2 
 #make sure date columns are read as date factor
-#PeterPaul$sampledate<-as.Date(PeterPaul$sampledate, format = "%m/%d/%Y")
-#NIWOT$collectDate<-as.Date(NIWOT$collectDate, format = "%m/%d/%Y")
+PeterPaul$sampledate<-ymd(PeterPaul$sampledate)
+NIWOT$collectDate<-ymd(NIWOT$collectDate)
 ```
 ## Define your theme
 3. Build a theme and set it as your default theme. Customize the look of at least two of the following: 
@@ -56,9 +59,11 @@ NIWOT<-read.csv("NEON_NIWO_Litter_mass_trap_Processed.csv",stringsAsFactors = TR
 
 ```{r build plot theme}
 #3
-
-
-```
+d_theme<-theme_classic(base_size = 14) +
+  theme(axis.text= element_text(color="blue"),
+        legend.position="top",
+        legend.justification ="center")
+theme_set(d_theme)
 
 ## Create graphs
 For numbers 4-7, create ggplot graphs and adjust aesthetics to follow best practices for data visualization. Ensure your theme, color palettes, axes, and additional aesthetics are edited accordingly.
@@ -67,7 +72,12 @@ For numbers 4-7, create ggplot graphs and adjust aesthetics to follow best pract
 
 ```{r plot total P vs PO4}
 #4 
-
+Plot4<-
+  ggplot(PeterPaul,aes(x = tp_ug, y=po4,color=lakename))+
+  geom_point()+
+  geom_smooth(color="black") +
+  ylim(0,50)
+print(Plot4)
 ```
 
 
@@ -79,7 +89,29 @@ Tip:
 
 ```{r Create boxplots}
 #5 
-
+#create boxplot by temperature
+Plot5a<- ggplot(PeterPaul,aes(x = month, y = temperature_C, color=lakename))+
+  geom_boxplot()
+print(Plot5a)
+#create boxplot by TP
+Plot5b<- ggplot(PeterPaul,aes(x = month, y = tp_ug, color=lakename))+
+  geom_boxplot()
+print(Plot5b)
+#create boxplot by TN
+Plot5c<- ggplot(PeterPaul,aes(x = month, y = tn_ug, color=lakename))+
+  geom_boxplot()
+print(Plot5c)
+#Isolate legend
+Master_Legend<-get_legend(Plot5a)
+#Combine 3 boxplots
+Plot5<-
+  plot_grid(
+    Plot5a+theme(legend.position = "none"),
+    Plot5b+theme(legend.position = "none"),
+    Plot5c+theme(legend.position = "none"),
+    nrow = 1, align = "h") +
+  theme(Master_Legend)
+print(Plot5)
 ```
 
 Question: What do you observe about the variables of interest over seasons and between lakes? 
