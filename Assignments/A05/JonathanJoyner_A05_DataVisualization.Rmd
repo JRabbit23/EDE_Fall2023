@@ -75,7 +75,7 @@ For numbers 4-7, create ggplot graphs and adjust aesthetics to follow best pract
 Plot4<-
   ggplot(PeterPaul,aes(x = tp_ug, y=po4,color=lakename))+
   geom_point()+
-  geom_smooth(color="black") +
+  geom_smooth(method=lm,color="black") +
   ylim(0,50)
 print(Plot4)
 ```
@@ -88,29 +88,35 @@ Tip:
 * R has a built-in variable called `month.abb` that returns a list of months;see <https://r-lang.com/month-abb-in-r-with-example>
 
 ```{r Create boxplots}
-#5 
+#5 Rename axis labels
 #create boxplot by temperature
-Plot5a<- ggplot(PeterPaul,aes(x = month, y = temperature_C, color=lakename))+
-  geom_boxplot()
+Plot5a<- ggplot(PeterPaul,aes(x = factor(month,levels=1:12,labels=month.abb), y = temperature_C, color=lakename))+
+  geom_boxplot() +
+  labs(y="Tempereature",x="") +
+  theme(legend.position ="bottom")
 print(Plot5a)
 #create boxplot by TP
-Plot5b<- ggplot(PeterPaul,aes(x = month, y = tp_ug, color=lakename))+
-  geom_boxplot()
+Plot5b<- ggplot(PeterPaul,aes(x = factor(month,levels=1:12,labels=month.abb), y = temperature_C, color=lakename))+
+  geom_boxplot() +
+  labs(y="TP",x="") +
+  theme(legend.position ="bottom")
 print(Plot5b)
 #create boxplot by TN
-Plot5c<- ggplot(PeterPaul,aes(x = month, y = tn_ug, color=lakename))+
-  geom_boxplot()
+Plot5c<- ggplot(PeterPaul,aes(x = factor(month,levels=1:12,labels=month.abb), y = temperature_C, color=lakename))+
+  geom_boxplot() +
+  labs(y="TN",x="") +
+  theme(legend.position ="bottom")
 print(Plot5c)
-#Isolate legend
-Master_Legend<-get_legend(Plot5a)
 #Combine 3 boxplots
 Plot5<-
-  plot_grid(
-    Plot5a+theme(legend.position = "none"),
-    Plot5b+theme(legend.position = "none"),
-    Plot5c+theme(legend.position = "none"),
-    nrow = 1, align = "h") +
-  theme(Master_Legend)
+  plot_grid(Plot5a + theme(legend.position = "none"),
+            Plot5b + theme(legend.position = "none"),
+            Plot5c + theme(legend.position = "none"),
+  get_legend(Plot5a),
+  ncol=1,
+  align="vh",
+  axis="b",
+  rel_heights=c(1,1,1,0.5))
 print(Plot5)
 ```
 
@@ -134,11 +140,10 @@ Plot6F<- ggplot(NIWOTNeedles,aes(x = collectDate, y = dryMass, color=nlcdClass))
 print(Plot6F)
 #7
 Plot7 <-
-  ggplot(NIWOTNeedles,aes(x = collectDate, y = dryMass) +
+  ggplot(NIWOTNeedles,aes(x = collectDate, y = dryMass)) +
   geom_point() +
   facet_wrap(vars(nlcdClass))
 print(Plot7)
-
 ```
 Question: Which of these plots (6 vs. 7) do you think is more effective, and why? 
 
