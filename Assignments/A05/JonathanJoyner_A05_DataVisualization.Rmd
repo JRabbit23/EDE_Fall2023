@@ -37,7 +37,7 @@ library(tidyverse)
 library(lubridate)
 library(cowplot)
 library(ggplot2)
-#set path for processed data files
+#set path for processed data files 
 getwd()
 setwd(
   "C:/Users/jbjoy/OneDrive/Documents/Grad School/Fall 2023/Environ 872/EDE_Fall2023/Data/Processed_KEY")
@@ -64,7 +64,7 @@ NIWOT$collectDate<-ymd(NIWOT$collectDate)
  * Axis ticks/gridlines
  * Legend
 
-```{r build plot theme}
+```{r build plot theme and plot total P vs PO4}
 #3 adjust theme 
 d_theme<-theme_classic(base_size = 14) +
   theme(axis.text= element_text(color="blue"),
@@ -73,12 +73,6 @@ d_theme<-theme_classic(base_size = 14) +
 #set theme
 theme_set(d_theme)
 
-## Create graphs
-For numbers 4-7, create ggplot graphs and adjust aesthetics to follow best practices for data visualization. Ensure your theme, color palettes, axes, and additional aesthetics are edited accordingly.
-
-4. [NTL-LTER] Plot total phosphorus (`tp_ug`) by phosphate (`po4`), with separate aesthetics for Peter and Paul lakes. Add a line of best fit and color it black. Adjust your axes to hide extreme values (hint: change the limits using `xlim()` and/or `ylim()`).
-
-```{r plot total P vs PO4}
 #4 Plot total by phosphate and set aesthetics with best fit line
 #set vertical limit of 50
 Plot4<-
@@ -99,19 +93,31 @@ Tip:
 ```{r Create boxplots}
 #5 Rename axis labels
 #create boxplot by temperature
-Plot5a<- ggplot(PeterPaul,aes(x = factor(month,levels=1:12,labels=month.abb), y = temperature_C, color=lakename))+
+Plot5a<-
+  ggplot(PeterPaul,
+         aes(x=factor(month,levels=1:12,labels=month.abb),
+             y = temperature_C,
+             color=lakename))+
   geom_boxplot() +
   labs(y="Tempereature",x="") +
   theme(legend.position ="bottom")
 print(Plot5a)
 #create boxplot by TP
-Plot5b<- ggplot(PeterPaul,aes(x = factor(month,levels=1:12,labels=month.abb), y = temperature_C, color=lakename))+
+Plot5b<-
+  ggplot(PeterPaul,
+         aes(x = factor(month,levels=1:12,labels=month.abb),
+             y = temperature_C,
+             color=lakename))+
   geom_boxplot() +
   labs(y="TP",x="") +
   theme(legend.position ="bottom")
 print(Plot5b)
 #create boxplot by TN
-Plot5c<- ggplot(PeterPaul,aes(x = factor(month,levels=1:12,labels=month.abb), y = temperature_C, color=lakename))+
+Plot5c<-
+  ggplot(PeterPaul,
+         aes(x = factor(month,levels=1:12,labels=month.abb),
+             y = temperature_C,
+             color=lakename))+
   geom_boxplot() +
   labs(y="TN",x="") +
   theme(legend.position ="bottom")
