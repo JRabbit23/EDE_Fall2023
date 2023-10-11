@@ -39,7 +39,7 @@ Filename | EPAair_O3_PM25_NC1819_Processed.csv
 
 Set the following R code chunk so that it runs when knit, but no messages, errors, or any output is shown. The code itself, however, should be displayed.
 
-```{r project.setup}
+```{r project.setup, echo=TRUE, error=FALSE, message=FALSE,results="hide"}
 #Import libraries
 library(tidyverse);library(lubridate);library(here);library(knitr)
 
