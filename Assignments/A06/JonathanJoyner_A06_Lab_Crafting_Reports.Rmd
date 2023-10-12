@@ -151,3 +151,4 @@ Add a table of contents to your document and knit to a PDF. Submit your PDF to S
 
 ## Git Repository
 
+https://github.com/JRabbit23/EDE_Fall2023/tree/main/Assignments/A06
