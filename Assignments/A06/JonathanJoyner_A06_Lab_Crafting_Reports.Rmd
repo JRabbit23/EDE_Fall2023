@@ -64,8 +64,8 @@ Customize the chunk options such that the code is run but is not displayed in th
 >
 > -   If your output table spans across two pages, try inserting a page break in the markdown just before your code chunk.
 
-
-```{r data.summary}
+\newpage
+```{r data.summary, echo=FALSE, eval=TRUE, results="asis"}
 #Compute mean PM2.5 concentration for each county, sorted by value
 summary_PM25 <- epa_data %>% 
   drop_na(PM2.5) %>% 
@@ -82,7 +82,8 @@ summary_Ozone <- epa_data %>%
   arrange(mean_Ozone)
 
 #Use the `kable` function to produce the 2 tables in markdown format
-
+kable(summary_PM25, caption = "Mean Particulates (2.5mm)",col.names = c("County","$\\mu g/m^3$"))
+kable(summary_Ozone, caption = "Mean Ozone",col.names = c("County","$\\mu g/m^3$"))
 ```
 
 ---
@@ -91,6 +92,48 @@ summary_Ozone <- epa_data %>%
 
 Create two separate code chunks that create boxplots of the distribution of Ozone levels by month using, one for only records collected in 2018 and one for records in 2019. Customize the chunk options such that the final figures are displayed but not the code used to generate the figures. In addition, align the plots on the left side of the page and set the figure heights so both plots fit on the same page with minimal space remaining. Lastly, add a `fig.cap` chunk option to add a caption (title) to your plot that will display underneath the figure.
 
+```{r,fig.cap="Ozone 2018-2019"}
+#set theme
+mytheme <- theme_classic(base_size = 14)
+theme_set(mytheme)
+#Fix Date Column
+epa_data$Date=ymd(epa_data$Date)
+#create Ozone 2018 boxplot
+Ozone_2018 <-
+  epa_data %>%
+    filter(Year==2018) %>%
+      ggplot(
+    aes( 
+      x=factor(Month,
+               levels=1:12,
+               labels=month.abb),
+      y=Ozone))+
+  geom_boxplot()+
+  labs(
+    x="Month",
+    y="Concentration",
+    title="Ozone 2018")
+plot(Ozone_2018)
+```
+
+```{r}
+#create Ozone 2019 boxplot
+Ozone_2019 <-
+  epa_data %>%
+    filter(Year==2019) %>%
+      ggplot(
+    aes( 
+      x=factor(Month,
+               levels=1:12,
+               labels=month.abb),
+      y=Ozone))+
+  geom_boxplot()+
+  labs(
+    x="Month",
+    y="Concentration",
+    title="Ozone 2019")
+plot(Ozone_2019)
+```
 
 
 ---
