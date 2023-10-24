@@ -30,6 +30,8 @@ This exercise accompanies the lessons in Environmental Data Analytics on general
 library(tidyverse)
 library(agricolae)
 library(lubridate)
+library(corrplot)
+library(dplyr)
 setwd("C:/Users/jbjoy/OneDrive/Documents/Grad School/Fall 2023/Environ 872/EDE_Fall2023/Data/Raw")
 NTLRAW<-read.csv("NTL-LTER_Lake_ChemistryPhysics_Raw.csv",stringsAsFactors=TRUE)
 NTLRAW$sampledate<-ymd(NTLRAW$sampledate)
@@ -68,12 +70,12 @@ Q4Data<-
 Q4Scatter<-
   ggplot(Q4Data,aes(
     x=depth,
-    y=temperature_C,
-    color=lakename))+
-  geom_point(alpha=0.4)+
+    y=temperature_C))+
+  labs(title="Lake Temperature by Depth", x="Depth",y="Temperature")+
+  geom_point()+
   ylim(0,35)+
-  geom_smooth()+
-print(Q4Scatter)
+  geom_smooth()
+plot(Q4Scatter)
 ```
 
 
@@ -108,11 +110,11 @@ Let's tackle a similar question from a different approach. Here, we want to expl
 
 ```{r temperature.model}
 #9
-
-
+Q4AIC<-lm(data=Q4Data,temperature_C~year4+daynum+depth)
+summary(Q4AIC)
 
 #10
-
+step(Q4AIC)
 
 ```
 
@@ -129,7 +131,8 @@ Let's tackle a similar question from a different approach. Here, we want to expl
 
 ```{r anova.model}
 #12
-
+Q4ANOVA<-aov(data=Q4Data,temperature_C~depth)
+summary(Q4ANOVA)
 
 ```
 
@@ -143,7 +146,16 @@ Let's tackle a similar question from a different approach. Here, we want to expl
 
 ```{r scatterplot.2}
 #14.
-
+Q4MultiScatter<-
+  ggplot(Q4Data,aes(
+    x=depth,
+    y=temperature_C,
+    color=lakename))+
+  labs(title="Regional Lake Temperature by Depth", x="Depth",y="Temperature")+
+  geom_point(alpha=0.5)+
+  ylim(0,35)+
+  geom_smooth(method = "lm", se = FALSE)
+plot(Q4MultiScatter)
 
 ```
 
