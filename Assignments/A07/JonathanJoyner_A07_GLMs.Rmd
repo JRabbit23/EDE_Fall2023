@@ -27,10 +27,18 @@ This exercise accompanies the lessons in Environmental Data Analytics on general
 
 ```{r setup2}
 #1
-
-
+library(tidyverse)
+library(agricolae)
+library(lubridate)
+setwd("C:/Users/jbjoy/OneDrive/Documents/Grad School/Fall 2023/Environ 872/EDE_Fall2023/Data/Raw")
+NTLRAW<-read.csv("NTL-LTER_Lake_ChemistryPhysics_Raw.csv",stringsAsFactors=TRUE)
+NTLRAW$sampledate<-ymd(NTLRAW$sampledate)
+#NTLRAW$sampledate<-as.Date(NTLRAW$sampledate,format="%Y-%m-%d")
 #2
-
+mytheme <- theme_classic(base_size = 14) +
+  theme(axis.text = element_text(color = "black"), 
+        legend.position = "top")
+theme_set(mytheme)
 
 ```
 
@@ -39,9 +47,8 @@ Our first research question is: Does mean lake temperature recorded during July 
 
 3. State the null and alternative hypotheses for this question:
 > Answer:
-H0: 
-Ha: 
-
+H0: July mean water temperatures do not change across all lake depth levels.
+Ha: July mean water temperatues vary depending on lake depth.
 
 4.  Wrangle your NTL-LTER dataset with a pipe function so that the records meet the following criteria: 
  * Only dates in July. 
@@ -52,17 +59,27 @@ Ha:
 
 ```{r scatterplot}
 #4
-
-
+Q4Data<-
+  NTLRAW %>%
+  select(lakename,year4,daynum,depth,temperature_C) %>%
+  filter(daynum%in%c(182:212)) %>%
+  drop_na()
 #5
-
-
+Q4Scatter<-
+  ggplot(Q4Data,aes(
+    x=depth,
+    y=temperature_C,
+    color=lakename))+
+  geom_point(alpha=0.4)+
+  ylim(0,35)+
+  geom_smooth()+
+print(Q4Scatter)
 ```
 
 
 6. Interpret the figure. What does it suggest with regards to the response of temperature to depth? Do the distribution of points suggest about anything about the linearity of this trend?
 
-> Answer: 
+> Answer: The scatterplot suggests that across all lakes, the mean temperatures decreases in a similar manner. The decrease is most prominent between 1 and 5 meters, but it plateaus at that point.
 
 
 7. Perform a linear regression to test the relationship and display the results
