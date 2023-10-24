@@ -86,15 +86,15 @@ print(Q4Scatter)
 
 ```{r linear.regression}
 #7
-
-
+Q4LR<- lm(
+  data = Q4Data, temperature_C ~ depth)
+summary(Q4LR)
 ```
 
 
 8. Interpret your model results in words. Include how much of the variability in temperature is explained by changes in depth, the degrees of freedom on which this finding is based, and the statistical significance of the result. Also mention how much temperature is predicted to change for every 1m change in depth. 
 
-> Answer:
-
+> Answer: According to the linear regression results, there is a negative correlation between depth and temperature based on a slope of -1.95. The p value associated with these results is also less than 0.05 which means the correlation positied in our alternative hypothesis is demonstrably present.
 
 ---
 
