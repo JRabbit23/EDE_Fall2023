@@ -35,7 +35,7 @@ library(dplyr)
 setwd("C:/Users/jbjoy/OneDrive/Documents/Grad School/Fall 2023/Environ 872/EDE_Fall2023/Data/Raw")
 NTLRAW<-read.csv("NTL-LTER_Lake_ChemistryPhysics_Raw.csv",stringsAsFactors=TRUE)
 NTLRAW$sampledate<-ymd(NTLRAW$sampledate)
-#NTLRAW$sampledate<-as.Date(NTLRAW$sampledate,format="%Y-%m-%d")
+#NTLRAW$sampledate<-as.Date(NTLRAW$sampledate,format="%y/%m/%d")
 #2
 mytheme <- theme_classic(base_size = 14) +
   theme(axis.text = element_text(color = "black"), 
@@ -96,7 +96,7 @@ summary(Q4LR)
 
 8. Interpret your model results in words. Include how much of the variability in temperature is explained by changes in depth, the degrees of freedom on which this finding is based, and the statistical significance of the result. Also mention how much temperature is predicted to change for every 1m change in depth. 
 
-> Answer: According to the linear regression results, there is a negative correlation between depth and temperature based on a slope of -1.95. The p value associated with these results is also less than 0.05 which means the correlation positied in our alternative hypothesis is demonstrably present.
+> Answer: According to the linear regression results, there is a negative correlation between depth and temperature based on a slope of -1.95 which means that the temperature is decreasing around 1.95 degrees per 1 meter. This is not constant, but it is indicative of the trend. The p value associated with these results is also less than 0.05 which means the correlation positied in our alternative hypothesis is demonstrably present. Around 74% of the variability can be explained by depth.
 
 ---
 
@@ -163,7 +163,7 @@ plot(Q4MultiScatter)
 
 ```{r tukey.test}
 #15
-
+TukeyHSD(Q4ANOVA)
 
 ```
 
@@ -182,7 +182,13 @@ plot(Q4MultiScatter)
 18. Wrangle the July data to include only records for Crampton Lake and Ward Lake. Run the two-sample T-test on these data to determine whether their July temperature are same or different. What does the test say? Are the mean temperatures for the lakes equal? Does that match you answer for part 16?
 
 ```{r t.test}
-
+Q18Data<-
+  NTLRAW %>%
+  select(lakename,year4,daynum,depth,temperature_C) %>%
+  filter(daynum%in%c(182:212),
+           lakename=="Crampton Lake" |
+           lakename=="Ward Lake")
+t.test(Q18Data$temperature_C~Q18Data$lakename)
 ```
 
 >Answer: 
