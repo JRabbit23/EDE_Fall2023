@@ -27,14 +27,18 @@ This exercise accompanies the lessons in Environmental Data Analytics on general
 
 ```{r setup2}
 #1
+#load packages
 library(tidyverse)
 library(agricolae)
 library(lubridate)
 library(corrplot)
 library(dplyr)
+#set working directory
 setwd("C:/Users/jbjoy/OneDrive/Documents/Grad School/Fall 2023/Environ 872/EDE_Fall2023/Data/Raw")
+#read raw data file
 NTLRAW<-read.csv("NTL-LTER_Lake_ChemistryPhysics_Raw.csv",stringsAsFactors=TRUE)
 NTLRAW$sampledate<-mdy(NTLRAW$sampledate)
+#set theme
 mytheme <- theme_classic(base_size = 14) +
   theme(axis.text = element_text(color = "black"), 
         legend.position = "top")
@@ -59,12 +63,14 @@ Ha: July mean water temperatues vary depending on lake depth.
 
 ```{r scatterplot}
 #4
+#wrangle data for selected columns in July
 Q4Data<-
   NTLRAW %>%
   select(lakename,year4,daynum,depth,temperature_C) %>%
   filter(daynum%in%c(182:212)) %>%
   drop_na()
 #5
+#Create scatterplot showing temperature by depth across lakes in July
 Q4Scatter<-
   ggplot(Q4Data,aes(
     x=depth,
@@ -86,6 +92,7 @@ plot(Q4Scatter)
 
 ```{r linear.regression}
 #7
+#run linear regression model on data
 Q4LR<- lm(
   data = Q4Data, temperature_C ~ depth)
 summary(Q4LR)
@@ -108,10 +115,12 @@ Let's tackle a similar question from a different approach. Here, we want to expl
 
 ```{r temperature.model}
 #9
+#Ccampare AIC values
 Q4AIC<-lm(data=Q4Data,temperature_C~year4+daynum+depth)
 summary(Q4AIC)
 step(Q4AIC)
 #10
+#run multiple regression on selected variables
 Q4AIC<-lm(data=Q4Data,temperature_C~year4+daynum+depth)
 summary(Q4AIC)
 
@@ -129,6 +138,7 @@ summary(Q4AIC)
 
 ```{r anova.model}
 #12
+#run analysis of variance and compare July mean temperatures between lakes
 Q4ANOVA<-aov(data=Q4Data,temperature_C~lakename)
 summary(Q4ANOVA)
 
@@ -144,6 +154,7 @@ summary(Q4ANOVA)
 
 ```{r scatterplot.2}
 #14.
+#create scatterplot which shows change in temperature for depth across each lake
 Q4MultiScatter<-
   ggplot(Q4Data,aes(
     x=depth,
@@ -161,6 +172,7 @@ plot(Q4MultiScatter)
 
 ```{r tukey.test}
 #15
+#run Tukey test to group lakes by mean and look for statistical outliers
 print(HSD.test(Q4ANOVA,"lakename",group=T))
 
 ```
@@ -178,6 +190,7 @@ print(HSD.test(Q4ANOVA,"lakename",group=T))
 18. Wrangle the July data to include only records for Crampton Lake and Ward Lake. Run the two-sample T-test on these data to determine whether their July temperature are same or different. What does the test say? Are the mean temperatures for the lakes equal? Does that match you answer for part 16?
 
 ```{r t.test}
+#run two sample test to compare just Crampton and Ward Lakes
 Q18Data<-
   NTLRAW %>%
   select(lakename,year4,daynum,depth,temperature_C) %>%
