@@ -34,9 +34,7 @@ library(corrplot)
 library(dplyr)
 setwd("C:/Users/jbjoy/OneDrive/Documents/Grad School/Fall 2023/Environ 872/EDE_Fall2023/Data/Raw")
 NTLRAW<-read.csv("NTL-LTER_Lake_ChemistryPhysics_Raw.csv",stringsAsFactors=TRUE)
-NTLRAW$sampledate<-ymd(NTLRAW$sampledate)
-#NTLRAW$sampledate<-as.Date(NTLRAW$sampledate,format="%y/%m/%d")
-#2
+NTLRAW$sampledate<-mdy(NTLRAW$sampledate)
 mytheme <- theme_classic(base_size = 14) +
   theme(axis.text = element_text(color = "black"), 
         legend.position = "top")
@@ -74,14 +72,14 @@ Q4Scatter<-
   labs(title="Lake Temperature by Depth", x="Depth",y="Temperature")+
   geom_point()+
   ylim(0,35)+
-  geom_smooth()
+  geom_smooth(method = "lm", se = FALSE)
 plot(Q4Scatter)
 ```
 
 
 6. Interpret the figure. What does it suggest with regards to the response of temperature to depth? Do the distribution of points suggest about anything about the linearity of this trend?
 
-> Answer: The scatterplot suggests that across all lakes, the mean temperatures decreases in a similar manner. The decrease is most prominent between 1 and 5 meters, but it plateaus at that point.
+> Answer: The scatterplot suggests that across all lakes, the mean temperatures decreases in a similar manner.
 
 
 7. Perform a linear regression to test the relationship and display the results
@@ -96,7 +94,7 @@ summary(Q4LR)
 
 8. Interpret your model results in words. Include how much of the variability in temperature is explained by changes in depth, the degrees of freedom on which this finding is based, and the statistical significance of the result. Also mention how much temperature is predicted to change for every 1m change in depth. 
 
-> Answer: According to the linear regression results, there is a negative correlation between depth and temperature based on a slope of -1.95 which means that the temperature is decreasing around 1.95 degrees per 1 meter. This is not constant, but it is indicative of the trend. The p value associated with these results is also less than 0.05 which means the correlation positied in our alternative hypothesis is demonstrably present. Around 74% of the variability can be explained by depth.
+> Answer: According to the linear regression results, there is a negative correlation between depth and temperature based on a slope of -1.95 which means that the temperature is decreasing around 1.95 degrees per 1 meter. The p value associated with these results is also less than 0.05 which means the correlation positied in our alternative hypothesis is demonstrably present. Around 74% of the variability can be explained by depth.
 
 ---
 
@@ -112,16 +110,16 @@ Let's tackle a similar question from a different approach. Here, we want to expl
 #9
 Q4AIC<-lm(data=Q4Data,temperature_C~year4+daynum+depth)
 summary(Q4AIC)
-
-#10
 step(Q4AIC)
+#10
+Q4AIC<-lm(data=Q4Data,temperature_C~year4+daynum+depth)
+summary(Q4AIC)
 
 ```
 
 11. What is the final set of explanatory variables that the AIC method suggests we use to predict temperature in our multiple regression? How much of the observed variance does this model explain? Is this an improvement over the model using only depth as the explanatory variable?
 
-> Answer: 
-
+> Answer: The final set is year4,daynum, and depth as all have P values less than 0.05. Adding the year4 and daynum variables increases the R squared value from 73.91% to 74.17% which is a slight improvement over the single regression model with only depth as a variable.
 
 
 ---
@@ -131,14 +129,14 @@ step(Q4AIC)
 
 ```{r anova.model}
 #12
-Q4ANOVA<-aov(data=Q4Data,temperature_C~depth)
+Q4ANOVA<-aov(data=Q4Data,temperature_C~lakename)
 summary(Q4ANOVA)
 
 ```
 
 13. Is there a significant difference in mean temperature among the lakes? Report your findings. 
 
-> Answer: 
+> Answer: The anova test results in a P value below 0.05 which shows that the lakes do not have on average, different temperatues in July.
 
 
 
@@ -163,20 +161,18 @@ plot(Q4MultiScatter)
 
 ```{r tukey.test}
 #15
-TukeyHSD(Q4ANOVA)
+print(HSD.test(Q4ANOVA,"lakename",group=T))
 
 ```
 
 16.From the findings above, which lakes have the same mean temperature, statistically speaking, as Peter Lake? Does any lake have a mean temperature that is statistically distinct from all the other lakes?
 
->Answer:
+>Answer: Ward and Paul Lakes also belong to group c so they are statistically similar to Peter Lake. None of the lakes are statistically unique. They all have a group overlap with at least one other lake.
 
  
-
 17. If we were just looking at Peter Lake and Paul Lake. What's another test we might explore to see whether they have distinct mean temperatures? 
 
->Answer: 
-
+>Answer: The two sample T-test would be a good way to compare the mean temperatures of both Peter and Paul lakes.
 
 
 18. Wrangle the July data to include only records for Crampton Lake and Ward Lake. Run the two-sample T-test on these data to determine whether their July temperature are same or different. What does the test say? Are the mean temperatures for the lakes equal? Does that match you answer for part 16?
@@ -191,4 +187,4 @@ Q18Data<-
 t.test(Q18Data$temperature_C~Q18Data$lakename)
 ```
 
->Answer: 
+>Answer: The test shows that mean differences in temperature between the lakes are present. The p value is significantly higher than 0.05 and the sample estimate of Crampton Lake is nearly one whole degree higher on average than Ward Lake. 
