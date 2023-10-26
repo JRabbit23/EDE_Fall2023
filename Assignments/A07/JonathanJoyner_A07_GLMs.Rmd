@@ -152,7 +152,7 @@ summary(Q4ANOVA)
 
 14. Create a graph that depicts temperature by depth, with a separate color for each lake. Add a geom_smooth (method = "lm", se = FALSE) for each lake. Make your points 50 % transparent. Adjust your y axis limits to go from 0 to 35 degrees. Clean up your graph to make it pretty. 
 
-```{r scatterplot.2}
+```{r scatterplot.2,fig.width=12, fig.height=7}
 #14.
 #create scatterplot which shows change in temperature for depth across each lake
 Q4MultiScatter<-
