@@ -28,6 +28,7 @@ This exercise accompanies the lessons in Environmental Data Analytics on general
 
 ```{r}
 getwd()
+library(dplyr)
 library(tidyverse)
 library(lubridate)
 library(trend)
@@ -68,13 +69,19 @@ GaringerOzone <- rbind(Ozone2010,Ozone2011,Ozone2012,Ozone2013,Ozone2014,Ozone20
 
 ```{r}
 # 3
+GaringerOzone$Date<-as.Date(GaringerOzone$Date,format="%m/%d/%Y")
 
 # 4
+GaringerOzoneWrangle<-
+  GaringerOzone %>%
+  select(Date,Daily.Max.8.hour.Ozone.Concentration,DAILY_AQI_VALUE)
 
 # 5
+Days<-as.data.frame(seq(as.Date("2010-01-01"), as.Date("2019-12-31"), by = "days"))
+colnames(Days)<-"Date"
 
 # 6
-
+GaringerOzone <- left_join(Days, GaringerOzone, by = "Date")
 
 ```
 
@@ -84,10 +91,13 @@ GaringerOzone <- rbind(Ozone2010,Ozone2011,Ozone2012,Ozone2013,Ozone2014,Ozone20
 
 ```{r}
 #7
-
+ggplot(GaringerOzoneWrangle,aes(x=Date,y=Daily.Max.8.hour.Ozone.Concentration))+
+  geom_line()+
+  geom_smooth()+
+  labs(x="Year",y="Ozone Concentration")
 ```
 
->Answer:
+>Answer: The trend line is relatively stable over the past ten years, but has a slight downward trajectory.
 
 ## Time Series Analysis
 
@@ -97,7 +107,13 @@ Study question: Have ozone concentrations changed over the 2010s at this station
 
 ```{r}
 #8
+GaringerOzoneWrangle8<-
+  GaringerOzoneWrangle %>% 
+  zoo::na.approx(Daily.Max.8.hour.Ozone.Concentration)
 
+wind_data_clean <- 
+  wind_data %>% 
+  mutate( AWND.clean = zoo::na.approx(AWND) )
 ```
 
 > Answer: 
