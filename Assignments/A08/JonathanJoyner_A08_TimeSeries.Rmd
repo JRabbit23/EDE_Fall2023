@@ -72,11 +72,11 @@ GaringerOzone <- rbind(Ozone2010,Ozone2011,Ozone2012,Ozone2013,Ozone2014,Ozone20
 GaringerOzone$Date<-as.Date(GaringerOzone$Date,format="%m/%d/%Y")
 
 # 4
-GaringerOzoneWrangle<-
+GaringerOzone<-
   GaringerOzone %>%
   select(Date,Daily.Max.8.hour.Ozone.Concentration,DAILY_AQI_VALUE)
 
-# 5
+# 5 AI Assistance
 Days<-as.data.frame(seq(as.Date("2010-01-01"), as.Date("2019-12-31"), by = "days"))
 colnames(Days)<-"Date"
 
@@ -91,7 +91,7 @@ GaringerOzone <- left_join(Days, GaringerOzone, by = "Date")
 
 ```{r}
 #7
-ggplot(GaringerOzoneWrangle,aes(x=Date,y=Daily.Max.8.hour.Ozone.Concentration))+
+ggplot(GaringerOzone,aes(x=Date,y=Daily.Max.8.hour.Ozone.Concentration))+
   geom_line()+
   geom_smooth()+
   labs(x="Year",y="Ozone Concentration")
@@ -106,14 +106,9 @@ Study question: Have ozone concentrations changed over the 2010s at this station
 8. Use a linear interpolation to fill in missing daily data for ozone concentration. Why didn't we use a piecewise constant or spline interpolation?
 
 ```{r}
-#8
-GaringerOzoneWrangle8<-
-  GaringerOzoneWrangle %>% 
-  zoo::na.approx(Daily.Max.8.hour.Ozone.Concentration)
+#8 AI assistance
+GaringerOzone$Daily.Max.8.hour.Ozone.Concentration <- zoo::na.approx(GaringerOzone$Daily.Max.8.hour.Ozone.Concentration)
 
-wind_data_clean <- 
-  wind_data %>% 
-  mutate( AWND.clean = zoo::na.approx(AWND) )
 ```
 
 > Answer: 
@@ -122,7 +117,16 @@ wind_data_clean <-
 9. Create a new data frame called `GaringerOzone.monthly` that contains aggregated data: mean ozone concentrations for each month. In your pipe, you will need to first add columns for year and month to form the groupings. In a separate line of code, create a new Date column with each month-year combination being set as the first day of the month (this is for graphing purposes only)
 
 ```{r}
-#9
+#9 #AI assistance
+GaringerOzone.monthly<-
+  GaringerOzone %>%
+  mutate(
+    Month=month(Date),
+    Year=year(Date)) %>%
+  group_by(Year,Month) %>%   
+  summarize(mean_ozone = mean(Daily.Max.8.hour.Ozone.Concentration)) %>%
+  ungroup() %>%  
+  mutate(Date = make_date(Year,Month)) 
 
 ```
 
@@ -131,7 +135,11 @@ wind_data_clean <-
 
 ```{r}
 #10
+GaringerOzone.daily.ts<-
+  ts(GaringerOzone$Daily.Max.8.hour.Ozone.Concentration,start=c(2010-01-01),frequency=365)
 
+GaringerOzone.monthly.ts<-
+  ts(GaringerOzone.monthly$mean_ozone,start=c(2010-01-01),frequency=12)
 ```
 
 
@@ -139,7 +147,10 @@ wind_data_clean <-
 
 ```{r}
 #11
-
+Daily.stl<-stl(GaringerOzone.daily.ts, s.window = "periodic")
+plot(Daily.stl)
+Monthly.stl<-stl(GaringerOzone.monthly.ts, s.window = "periodic")
+plot(Monthly.stl)
 
 ```
 
@@ -148,9 +159,9 @@ wind_data_clean <-
 
 ```{r}
 #12
-
-
-
+Monthly.trend<- Kendall::SeasonalMannKendall(GaringerOzone.monthly.ts)
+Monthly.trend<- trend::smk.test(GaringerOzone.monthly.ts)
+summary(Monthly.trend)
 ```
 
 > Answer: 
@@ -159,10 +170,13 @@ wind_data_clean <-
 
 ```{r}
 # 13
-
-
-
-
+MeanOzonePlot<-
+  ggplot(GaringerOzone.monthly,aes(x=Date,y=mean_ozone)) +
+  geom_point()+
+  geom_line()+
+  labs(x = "Date", y = "Mean Ozone Concentration") +
+  ggtitle("Mean Monthly Ozone Concentrations Over Time")
+plot(MeanOzonePlot)
 ```
 
 14. To accompany your graph, summarize your results in context of the research question. Include output from the statistical test in parentheses at the end of your sentence. Feel free to use multiple sentences in your interpretation.
@@ -175,14 +189,11 @@ wind_data_clean <-
 
 ```{r}
 #15
-
-
-
+seasonal_component <- Monthly.stl$time.series[, "seasonal"]
+GaringerOzone_deseasonalized_ts <- GaringerOzone.monthly.ts - seasonal_component
 #16
-
-
-
-
+FinalMKTrend<- Kendall::MannKendall(GaringerOzone_deseasonalized_ts)
+summary(FinalMKTrend)
 ```
 
 > Answer: 
