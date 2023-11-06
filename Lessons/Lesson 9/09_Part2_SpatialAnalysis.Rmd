@@ -118,21 +118,23 @@ mapView(counties_sf, zcol = "AWATER")
 
 ```{r read HUCs shapefile}
 #Read the shapefile into an sf dataframe named "huc8_sf"
-
+huc8_sf <- st_read(here(
+  'Data/Spatial/NCHUC8.shp'), stringsAsFactors = TRUE)
 
 #Reveal the columns
-
+colnames(huc8_sf)
 
 #Check the CRS
-
+st_crs(huc8_sf)
 
 #Examine some records
 head(huc8_sf)
 
 #View the data as a map, colored by the acreage in each
-
-
-
+ggplot(huc8_sf)+
+  geom_sf(fill="ACRES") +
+  scale_fill_viridis_c()
+mapview(huc8_sf,zcol = "ACRES")
 
 ```
 
@@ -142,13 +144,18 @@ head(huc8_sf)
 
 ```{r Select the Upper Neuse HUC 8}
 #Read the shapefile into an sf dataframe
-
+NeuseSF <- 
+  st_read(here('Data/Spatial/NCHUC8.shp')) %>%
+  filter(SUBBASIN=="Upper Neuse")
 
 
 #Create a map
+ggplot() +
+  geom_sf(data=huc8_sf, fill="orange") +
+  geom_sf(data=NeuseSF, fill="purple")
 
-
-
+mapview(huc8_sf,col.region = "orange") +
+  mapview(NeuseSF,col.region="purple")
 
 ```
 
@@ -294,14 +301,18 @@ mapview(state_sf)
 
 ```{r Aggregate the HUC data on an attribute, saving as huc2_sf}
 #List the unique values in the DWQ_Basin field
-
+unique(huc8_sf$DWQ_Basin)
 
 
 #Summarize on DWQ Basin value
-
+huc2_sf<- huc8_sf %>%
+  group_by(DWQ_Basin) %>%
+  summarize(
+    ACRES = sum(ACRES),
+    SQ_MILES = sum(SQ_MILES))
 
 #Map the data
-
+mapview(huc2_sf)
 
 ```
 
@@ -381,7 +392,8 @@ mapview(neuse_counties_sf, zcol='Area_m2')
 
 ```{r EXERCISE: Clipping}
 #Select the Triangle County from the 
-
+tri_sf<-counties_sf_utm %>%
+  filter(NAME %in% c("Chatham","Durham","Orange","Wake"))
 
   
 #Grab the intersecting HUC_8s
