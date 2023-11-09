@@ -198,7 +198,7 @@ Up next we will do some spatial analysis with our data. To prepare for this, we 
  UTM14Gageloc <- st_transform(GagelocSF, crs = 32614)
 
 #21 Plot the data
-mapview(UTM14NECounties, col.regions = 'yellow')
+mapview(UTM14NECounties, col.regions = 'yellow')+
 mapview(UTM14Gageloc, col.regions = 'red')
 ```
 
@@ -222,9 +222,11 @@ dawson_county <-
     filter(NAME == "Dawson")
 
 #23 Spatially select gages within the selected county
-
+dawson_gages <- UTM14Gageloc[dawson_county,]
 
 #24 Plot
-
+mapview(UTM14NECounties) + 
+mapview(dawson_gages, col.regions = 'red') + 
+mapview(dawson_county, col.regions = 'yellow')
 
 ```
