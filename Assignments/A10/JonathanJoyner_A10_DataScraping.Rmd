@@ -28,6 +28,12 @@ This exercise accompanies the lessons in Environmental Data Analytics on data sc
 library(tidyverse)
 library(rvest)
 getwd()
+
+# Set theme
+mytheme <- theme_classic() +
+  theme(axis.text = element_text(color = "black"), 
+        legend.position = "top")
+theme_set(mytheme)
 ```
 
 2. We will be scraping data from the NC DEQs Local Water Supply Planning website, specifically the Durham's 2022 Municipal Local Water Supply Plan (LWSP): 
@@ -76,18 +82,7 @@ Ownership <- DurhamLWSP %>%
 Ownership
 
 MaxDayUse <- DurhamLWSP %>%
-  html_nodes("tr:nth-child(2) th~ td:nth-child(3),
-             tr:nth-child(3) th~ td:nth-child(3),
-             tr:nth-child(4) th~ td:nth-child(3),
-             tr:nth-child(5) th~ td:nth-child(3),
-             tr:nth-child(2) th~ td+ td:nth-child(6),
-             tr:nth-child(3) th~ td+ td:nth-child(6),
-             tr:nth-child(4) th~ td+ td:nth-child(6),
-             tr:nth-child(5) th~ td+ td:nth-child(6),
-             tr:nth-child(2) th~ td:nth-child(9),
-             tr:nth-child(3) th~ td:nth-child(9),
-             tr:nth-child(4) th~ td:nth-child(9),
-             tr:nth-child(5) th~ td:nth-child(9)") %>% 
+  html_nodes("th~ td+ td") %>% 
   html_text()
 MaxDayUse
 ```
@@ -102,10 +97,28 @@ MaxDayUse
 5. Create a line plot of the maximum daily withdrawals across the months for 2022
 
 ```{r create.a.dataframe.from.scraped.data}
-#4 
+#4 AI assisted for date object transformation code
+custom_month_order <- c("JAN","MAY","SEP",
+                        "FEB","JUN","OCT",
+                        "MAR","JUL","NOV",
+                        "APR","AUG","DEC")
 
-#5 
-
+Durham_df <- data.frame("Water_System_Name" = as.character(Water_System_Name),
+                        "PWSID" = as.character(PWSID),
+                        "Ownership" = as.character(Ownership),
+                        "Max_Day_Use" = as.numeric(MaxDayUse),
+                        "Month" = custom_month_order,
+                        "Year" = rep(2022))
+Durham_df$Date <- 
+  as.Date(paste(Durham_df$Year, Durham_df$Month, "01", sep = "-"),
+                format = "%Y-%b-%d")
+#5 AI assisted
+ggplot(Durham_df, aes(x = Date, y = Max_Day_Use)) +
+  geom_line() +
+  labs(title = "Maximum Daily Withdrawals (2022)",
+       x = "Date",
+       y = "Max Daily Withdrawals") +
+  scale_x_date(date_labels = "%b", date_breaks = "1 month")
 ```
 
 6. Note that the PWSID and the year appear in the web address for the page we scraped. Construct a function using your code above that can scrape data for any PWSID and year for which the NC DEQ has data. **Be sure to modify the code to reflect the year and site (pwsid) scraped**.
