@@ -71,10 +71,10 @@ Water_System_Name <- DurhamLWSP %>%
   html_text()
 Water_System_Name
 
-PWSID <- DurhamLWSP %>% 
+DurhamPWSID <- DurhamLWSP %>% 
   html_nodes("td tr:nth-child(1) td:nth-child(5)") %>% 
   html_text()
-PWSID
+DurhamPWSID
 
 Ownership <- DurhamLWSP %>% 
   html_nodes("div+ table tr:nth-child(2) td:nth-child(4)") %>% 
@@ -104,7 +104,7 @@ custom_month_order <- c("JAN","MAY","SEP",
                         "APR","AUG","DEC")
 
 Durham_df <- data.frame("Water_System_Name" = as.character(Water_System_Name),
-                        "PWSID" = as.character(PWSID),
+                        "PWSID" = as.character(DurhamPWSID),
                         "Ownership" = as.character(Ownership),
                         "Max_Day_Use" = as.numeric(MaxDayUse),
                         "Month" = custom_month_order,
@@ -125,24 +125,58 @@ ggplot(Durham_df, aes(x = Date, y = Max_Day_Use)) +
 
 ```{r construct.a.scraping.function}
 #6. 
+scrape.it <- function(the_year,the_facility){
 
+the_website <- read_html(paste0(
+  "https://www.ncwater.org/WUDC/app/LWSP/report.php?pwsid=",
+  the_facility,"&year=",the_year))
+  
+the_facility_name_tag <- "div+ table tr:nth-child(1) td:nth-child(2)"
+the_PWSID_tag <- "td tr:nth-child(1) td:nth-child(5)"
+the_Max_Day_Use_tag <- "th~ td+ td"
+the_Ownership_tag <- "div+ table tr:nth-child(2) td:nth-child(4)"
 
+the_facility_name <- the_website %>% html_nodes(the_facility_name_tag) %>% html_text()
+the_PWSID <- the_website %>% html_nodes(the_PWSID_tag) %>% html_text()
+the_Max_Day_Use <- the_website %>% html_nodes(the_Max_Day_Use_tag) %>% html_text()
+the_Ownership <- the_website %>% html_nodes(the_Ownership_tag) %>% html_text()
+
+NCDIV_water_scrape <- data.frame(
+                        "Water_System_Name" = as.character(the_facility_name),
+                        "PWSID" = as.character(the_PWSID),
+                        "Ownership" = as.character(the_Ownership),
+                        "Max_Day_Use" = as.numeric(the_Max_Day_Use),
+                        "Month" = custom_month_order,
+                        "Year" = as.numeric(the_year))
+NCDIV_water_scrape$Date <- 
+  as.Date(paste(NCDIV_water_scrape$Year, NCDIV_water_scrape$Month, "01", sep = "-"),
+                format = "%Y-%b-%d")
+return(NCDIV_water_scrape)
+}
 ```
 
 7. Use the function above to extract and plot max daily withdrawals for Durham (PWSID='03-32-010') for each month in 2015
 
 ```{r fetch.and.plot.Durham.2015.data}
 #7 
-
+Durham_2015 <- scrape.it(2015,"03-32-010")
+view(Durham_2015)
 
 ```
 
 8. Use the function above to extract data for Asheville (PWSID = 01-11-010) in 2015. Combine this data with the Durham data collected above and create a plot that compares Asheville's to Durham's water withdrawals.
 
 ```{r fetch.and.plot.Asheville.2015.data}
-#8 
-
-
+#8 AI Assisted
+Asheville_2015 <- scrape.it(2015,"01-11-010")
+view(Asheville_2015)
+combined_data <- rbind(Durham_2015, Asheville_2015)
+ggplot(combined_data, aes(x = Date, y = Max_Day_Use, color = Water_System_Name)) +
+  geom_line() +
+  labs(title = "Maximum Daily Withdrawals (2015)",
+       x = "Date",
+       y = "Max Daily Withdrawals") +
+  scale_x_date(date_labels = "%b", date_breaks = "1 month")
 ```
 
 
@@ -152,10 +186,26 @@ ggplot(Durham_df, aes(x = Date, y = Max_Day_Use)) +
 
 ```{r fetch.and.plot.Asheville.multiyear.data }
 #9 
+Ash_years <- 2010:2021
+Ash_facility_id <- "01-11-010"
 
+combined_data_asheville <- 
+  map2(Ash_years, rep(Ash_facility_id, length(Ash_years)), scrape.it) %>%
+  bind_rows()
+
+combined_data_asheville$Year <- as.factor(combined_data_asheville$Year)
+
+ggplot(combined_data_asheville, aes(x = Date, y = Max_Day_Use)) +
+  geom_line(aes(color = Year), size = 1, alpha = 0.7) +
+  geom_point(aes(color = Year), size = 1, shape = 19,color = 'black') +
+  geom_smooth(method = 'loess', se = FALSE, color = 'blue', size = 1) +
+  labs(title = "Asheville's Maximum Daily Withdrawals (2010-2021)",
+       x = "Date",
+       y = "Max Daily Withdrawals") +
+  scale_x_date(date_labels = "%Y", date_breaks = "1 year") +
+  theme(panel.grid.major.y = element_line(color = "gray", linetype = "dashed"))
 
 ```
 
 Question: Just by looking at the plot (i.e. not running statistics), does Asheville have a trend in water usage over time?
-> Answer:
->
+> Answer: Ashville was on a downward trend until 2015, but then started trending up. In 2019, water withdrawl spiked noticeably.
