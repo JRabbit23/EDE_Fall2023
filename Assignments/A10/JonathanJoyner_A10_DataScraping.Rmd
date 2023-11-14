@@ -27,6 +27,7 @@ This exercise accompanies the lessons in Environmental Data Analytics on data sc
 #1 
 library(tidyverse)
 library(rvest)
+library(knitr)
 getwd()
 
 # Set theme
@@ -112,6 +113,9 @@ Durham_df <- data.frame("Water_System_Name" = as.character(Water_System_Name),
 Durham_df$Date <- 
   as.Date(paste(Durham_df$Year, Durham_df$Month, "01", sep = "-"),
                 format = "%Y-%b-%d")
+view(Durham_df)
+kable(Durham_df)
+
 #5 AI assisted
 ggplot(Durham_df, aes(x = Date, y = Max_Day_Use)) +
   geom_line() +
@@ -161,6 +165,7 @@ return(NCDIV_water_scrape)
 #7 
 Durham_2015 <- scrape.it(2015,"03-32-010")
 view(Durham_2015)
+kable(Durham_2015)
 
 ```
 
@@ -170,7 +175,10 @@ view(Durham_2015)
 #8 AI Assisted
 Asheville_2015 <- scrape.it(2015,"01-11-010")
 view(Asheville_2015)
+kable(Asheville_2015)
+
 combined_data <- rbind(Durham_2015, Asheville_2015)
+
 ggplot(combined_data, aes(x = Date, y = Max_Day_Use, color = Water_System_Name)) +
   geom_line() +
   labs(title = "Maximum Daily Withdrawals (2015)",
@@ -194,6 +202,7 @@ combined_data_asheville <-
   bind_rows()
 
 combined_data_asheville$Year <- as.factor(combined_data_asheville$Year)
+kable(combined_data_asheville)
 
 ggplot(combined_data_asheville, aes(x = Date, y = Max_Day_Use)) +
   geom_line(aes(color = Year), size = 1, alpha = 0.7) +
