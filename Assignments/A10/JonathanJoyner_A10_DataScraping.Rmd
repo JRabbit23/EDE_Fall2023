@@ -39,7 +39,9 @@ Indicate this website as the as the URL to be scraped. (In other words, read the
 
 ```{r set.the.scraping.website}
 #2 
-
+DurhamLWSP <- read_html(
+  "https://www.ncwater.org/WUDC/app/LWSP/report.php?pwsid=03-32-010&year=2022")
+DurhamLWSP
 ```
 
 3. The data we want to collect are listed below:
@@ -58,7 +60,36 @@ In the code chunk below scrape these values, assigning them to four separate var
 
 ```{r scrape.the.data}
 #3 
+Water_System_Name <- DurhamLWSP %>% 
+  html_nodes("div+ table tr:nth-child(1) td:nth-child(2)") %>% 
+  html_text()
+Water_System_Name
 
+PWSID <- DurhamLWSP %>% 
+  html_nodes("td tr:nth-child(1) td:nth-child(5)") %>% 
+  html_text()
+PWSID
+
+Ownership <- DurhamLWSP %>% 
+  html_nodes("div+ table tr:nth-child(2) td:nth-child(4)") %>% 
+  html_text()
+Ownership
+
+MaxDayUse <- DurhamLWSP %>%
+  html_nodes("tr:nth-child(2) th~ td:nth-child(3),
+             tr:nth-child(3) th~ td:nth-child(3),
+             tr:nth-child(4) th~ td:nth-child(3),
+             tr:nth-child(5) th~ td:nth-child(3),
+             tr:nth-child(2) th~ td+ td:nth-child(6),
+             tr:nth-child(3) th~ td+ td:nth-child(6),
+             tr:nth-child(4) th~ td+ td:nth-child(6),
+             tr:nth-child(5) th~ td+ td:nth-child(6),
+             tr:nth-child(2) th~ td:nth-child(9),
+             tr:nth-child(3) th~ td:nth-child(9),
+             tr:nth-child(4) th~ td:nth-child(9),
+             tr:nth-child(5) th~ td:nth-child(9)") %>% 
+  html_text()
+MaxDayUse
 ```
 
 
