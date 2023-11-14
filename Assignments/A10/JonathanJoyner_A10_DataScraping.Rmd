@@ -202,7 +202,6 @@ combined_data_asheville <-
   bind_rows()
 
 combined_data_asheville$Year <- as.factor(combined_data_asheville$Year)
-kable(combined_data_asheville)
 
 ggplot(combined_data_asheville, aes(x = Date, y = Max_Day_Use)) +
   geom_line(aes(color = Year), size = 1, alpha = 0.7) +
